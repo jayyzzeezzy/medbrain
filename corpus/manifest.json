@@ -1,0 +1,200 @@
+[
+  {
+    "id": "mgb-acl-reconstruction",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-ACL.pdf",
+    "title": "",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "mgb-acl-nonop",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-non-operative-ACL-repair.pdf",
+    "title": "",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "mgb-meniscus-repair",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-meniscus-repair.pdf",
+    "title": "Rehabilitation Protocol for Arthroscopic Meniscal Repair",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "2021-04",
+    "fetch": "auto"
+  },
+  {
+    "id": "mgb-meniscectomy",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-meniscectomy.pdf",
+    "title": "Rehabilitation Protocol for Arthroscopic Partial Meniscectomy",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "mgb-rc-small-medium",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-rotator-cuff-tear-small-to-medium-tear.pdf",
+    "title": "",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "mgb-rc-large-massive",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-rotator-cuff-tear-large-to-massive-tear.pdf",
+    "title": "",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "mgb-rc-massive-nonop",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-non-operative-massive-rotator-cuff-tear.pdf",
+    "title": "",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "mgb-achilles-repair",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-achilles-tendon-repair.pdf",
+    "title": "",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "mgb-mpfl",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-MPFL.pdf",
+    "title": "",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "mgb-pf-pain-syndrome",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-patellofemoral-pain-syndrome.pdf",
+    "title": "",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "mgb-tka",
+    "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-total-knee-arthroplasty.pdf",
+    "title": "Rehabilitation Protocol for Total Knee Arthroplasty (TKA)",
+    "org": "Mass General Brigham",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "apta-acl-cpg",
+    "url": "https://www.orthopt.org/uploads/content_files/files/Physical_Therapist_Management_of_Total_Knee_Arthroplasty.pdf",
+    "title": "Physical Therapist Management of Total Knee Arthroplasty",
+    "org": "APTA",
+    "doc_type": "pdf",
+    "pub_date": "",
+    "fetch": "auto"
+  },
+  {
+    "id": "jospt-ankle-cpg",
+    "url": "https://www.orthopt.org/uploads/content_files/files/jospt.2021.0302.pdf",
+    "title": "Ankle Stability and Movement Coordination Impairments: Lateral Ankle Ligament Sprains Revision 2021",
+    "org": "JOSPT / APTA Academy of Orthopaedic Physical Therapy",
+    "doc_type": "pdf",
+    "pub_date": "2021-04",
+    "fetch": "auto"
+  },
+  {
+    "id": "jospt-achilles-cpg",
+    "url": "https://www.orthopt.org/uploads/content_files/files/Achilles_Pain_revision_2024.pdf",
+    "title": "",
+    "org": "JOSPT / APTA Academy of Orthopaedic Physical Therapy",
+    "doc_type": "pdf",
+    "pub_date": "2024",
+    "fetch": "auto"
+  },
+  {
+    "id": "jospt-pf-cpg",
+    "url": "https://www.jospt.org/doi/pdf/10.2519/jospt.2019.0302",
+    "title": "Patellofemoral Pain: Clinical Practice Guidelines",
+    "org": "JOSPT / APTA Academy of Orthopaedic Physical Therapy",
+    "doc_type": "pdf",
+    "pub_date": "2019-09",
+    "fetch": "manual"
+  },
+  {
+    "id": "nata-ankle",
+    "url": "https://www.nata.org/sites/default/files/2025-08/conservative_management_and_prevention_of_ankle_sprains_in_athletes.pdf",
+    "title": "Conservative Management and Prevention of Ankle Sprains in Athletes",
+    "org": "NATA",
+    "doc_type": "pdf",
+    "pub_date": "2013",
+    "fetch": "auto"
+  },
+  {
+    "id": "nata-pf",
+    "url": "https://www.nata.org/sites/default/files/2025-08/management_of_individuals_with_patellofemoral_pain.pdf",
+    "title": "Management of Individuals with Patellofemoral Pain",
+    "org": "NATA",
+    "doc_type": "pdf",
+    "pub_date": "2018",
+    "fetch": "auto"
+  },
+  {
+    "id": "nata-acl",
+    "url": "https://www.nata.org/sites/default/files/2025-08/prevention_of_anterior_cruciate_ligament_acl_injury_position_statement.pdf",
+    "title": "Prevention of Anterior Cruciate Ligament (ACL) Injury",
+    "org": "NATA",
+    "doc_type": "pdf",
+    "pub_date": "2018",
+    "fetch": "auto"
+  },
+  {
+    "id": "nata-slap-rtp",
+    "url": "https://www.nata.org/sites/default/files/2025-08/evaluation_management_outcomes_return_to_play_criteria_for_overhead_athletes_with_superior_labral_anterior_posterior_injuries.pdf",
+    "title": "Evaluation, Management, and Outcomes of and Return-to-Play Criteria for Overhead Athletes With Superior Labral Anterior-Posterior Injuries",
+    "org": "NATA",
+    "doc_type": "pdf",
+    "pub_date": "2018",
+    "fetch": "auto"
+  },
+  {
+    "id": "bjsm-concussion-consensus",
+    "url": "https://bjsm.bmj.com/content/bjsports/57/11/695.full.pdf",
+    "title": "Consensus Statement on Concussion in Sport: the 6th International Conference on Concussion in Sport, Amsterdam, October 2022",
+    "org": "BJSM",
+    "doc_type": "pdf",
+    "pub_date": "2023-06",
+    "fetch": "manual"
+  },
+  {
+    "id": "cdc-return-activities",
+    "url": "https://cdc.gov/heads-up/hcp/clinical-guidance/index.html",
+    "title": "Managing Return to Activities",
+    "org": "CDC HEADS UP",
+    "doc_type": "html",
+    "pub_date": "2025-07",
+    "fetch": "auto"
+  },
+  {
+    "id": "cdc-return-to-sports",
+    "url": "https://cdc.gov/heads-up/guidelines/returning-to-sports.html",
+    "title": "Returning to Sports",
+    "org": "CDC HEADS UP",
+    "doc_type": "html",
+    "pub_date": "2025-09",
+    "fetch": "auto"
+  }
+]
