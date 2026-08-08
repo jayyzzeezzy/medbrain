@@ -2,7 +2,7 @@
   {
     "id": "mgb-acl-reconstruction",
     "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-ACL.pdf",
-    "title": "",
+    "title": "Rehabilitation Protocol for Anterior Cruciate Ligament (ACL) Reconstruction",
     "org": "Mass General Brigham",
     "doc_type": "pdf",
     "pub_date": "",
@@ -11,7 +11,7 @@
   {
     "id": "mgb-acl-nonop",
     "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-non-operative-ACL-repair.pdf",
-    "title": "",
+    "title": "Rehabilitation Protocol for Non-Operative Management of ACL Injuries",
     "org": "Mass General Brigham",
     "doc_type": "pdf",
     "pub_date": "",
@@ -23,7 +23,7 @@
     "title": "Rehabilitation Protocol for Arthroscopic Meniscal Repair",
     "org": "Mass General Brigham",
     "doc_type": "pdf",
-    "pub_date": "2021-04",
+    "pub_date": "",
     "fetch": "auto"
   },
   {
@@ -38,7 +38,7 @@
   {
     "id": "mgb-rc-small-medium",
     "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-rotator-cuff-tear-small-to-medium-tear.pdf",
-    "title": "",
+    "title": "Rehabilitation Protocol for Rotator Cuff Repair — Small to Medium Sized Tears",
     "org": "Mass General Brigham",
     "doc_type": "pdf",
     "pub_date": "",
@@ -47,7 +47,7 @@
   {
     "id": "mgb-rc-large-massive",
     "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-rotator-cuff-tear-large-to-massive-tear.pdf",
-    "title": "",
+    "title": "Rehabilitation Protocol for Arthroscopic Rotator Cuff Repair — Large to Massive Tears",
     "org": "Mass General Brigham",
     "doc_type": "pdf",
     "pub_date": "",
@@ -56,7 +56,7 @@
   {
     "id": "mgb-rc-massive-nonop",
     "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-non-operative-massive-rotator-cuff-tear.pdf",
-    "title": "",
+    "title": "Rehabilitation Protocol for Non-Operative Massive Rotator Cuff Tear(s)",
     "org": "Mass General Brigham",
     "doc_type": "pdf",
     "pub_date": "",
@@ -65,7 +65,7 @@
   {
     "id": "mgb-achilles-repair",
     "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-achilles-tendon-repair.pdf",
-    "title": "",
+    "title": "Rehabilitation Protocol for Achilles Rupture Repair",
     "org": "Mass General Brigham",
     "doc_type": "pdf",
     "pub_date": "",
@@ -74,7 +74,7 @@
   {
     "id": "mgb-mpfl",
     "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-MPFL.pdf",
-    "title": "",
+    "title": "Rehabilitation Protocol for MPFL Reconstruction",
     "org": "Mass General Brigham",
     "doc_type": "pdf",
     "pub_date": "",
@@ -83,7 +83,7 @@
   {
     "id": "mgb-pf-pain-syndrome",
     "url": "https://www.massgeneral.org/assets/MGH/pdf/orthopaedics/sports-medicine/physical-therapy/rehabilitation-protocol-for-patellofemoral-pain-syndrome.pdf",
-    "title": "",
+    "title": "Rehabilitation Protocol for Patellofemoral Pain Syndrome",
     "org": "Mass General Brigham",
     "doc_type": "pdf",
     "pub_date": "",
@@ -99,13 +99,14 @@
     "fetch": "auto"
   },
   {
-    "id": "apta-acl-cpg",
+    "id": "jospt-acl-cpg",
     "url": "https://www.orthopt.org/uploads/content_files/files/Physical_Therapist_Management_of_Total_Knee_Arthroplasty.pdf",
-    "title": "Physical Therapist Management of Total Knee Arthroplasty",
-    "org": "APTA",
+    "title": "Exercise-Based Knee and Anterior Cruciate Ligament Injury Prevention",
+    "org": "JOSPT / APTA Academy of Orthopaedic Physical Therapy",
     "doc_type": "pdf",
-    "pub_date": "",
-    "fetch": "auto"
+    "pub_date": "2018-09",
+    "fetch": "auto",
+    "note": "orthopt.org serves this PDF (ACL Injury Prevention) under a filename for a different guideline (TKA Management). They should have corrected it to ACL Injury Prevention. URL is verified to be correct by content hash."
   },
   {
     "id": "jospt-ankle-cpg",
@@ -119,10 +120,10 @@
   {
     "id": "jospt-achilles-cpg",
     "url": "https://www.orthopt.org/uploads/content_files/files/Achilles_Pain_revision_2024.pdf",
-    "title": "",
+    "title": "Achilles Pain, Stiffness, and Muscle Power Deficits: Midportion Achilles Tendinopathy Revision — 2024",
     "org": "JOSPT / APTA Academy of Orthopaedic Physical Therapy",
     "doc_type": "pdf",
-    "pub_date": "2024",
+    "pub_date": "2024-12",
     "fetch": "auto"
   },
   {
@@ -137,7 +138,7 @@
   {
     "id": "nata-ankle",
     "url": "https://www.nata.org/sites/default/files/2025-08/conservative_management_and_prevention_of_ankle_sprains_in_athletes.pdf",
-    "title": "Conservative Management and Prevention of Ankle Sprains in Athletes",
+    "title": "National Athletic Trainers’ Association Position Statement: Conservative Management and Prevention of Ankle Sprains in Athletes",
     "org": "NATA",
     "doc_type": "pdf",
     "pub_date": "2013",
@@ -146,7 +147,7 @@
   {
     "id": "nata-pf",
     "url": "https://www.nata.org/sites/default/files/2025-08/management_of_individuals_with_patellofemoral_pain.pdf",
-    "title": "Management of Individuals with Patellofemoral Pain",
+    "title": "National Athletic Trainers’ Association Position Statement: Management of Individuals with Patellofemoral Pain",
     "org": "NATA",
     "doc_type": "pdf",
     "pub_date": "2018",
@@ -155,7 +156,7 @@
   {
     "id": "nata-acl",
     "url": "https://www.nata.org/sites/default/files/2025-08/prevention_of_anterior_cruciate_ligament_acl_injury_position_statement.pdf",
-    "title": "Prevention of Anterior Cruciate Ligament (ACL) Injury",
+    "title": "National Athletic Trainers’ Association Position Statement: Prevention of Anterior Cruciate Ligament Injury",
     "org": "NATA",
     "doc_type": "pdf",
     "pub_date": "2018",
@@ -164,7 +165,7 @@
   {
     "id": "nata-slap-rtp",
     "url": "https://www.nata.org/sites/default/files/2025-08/evaluation_management_outcomes_return_to_play_criteria_for_overhead_athletes_with_superior_labral_anterior_posterior_injuries.pdf",
-    "title": "Evaluation, Management, and Outcomes of and Return-to-Play Criteria for Overhead Athletes With Superior Labral Anterior-Posterior Injuries",
+    "title": "National Athletic Trainers’ Association Position Statement: Evaluation, Management, and Outcomes of and Return-to-Play Criteria for Overhead Athletes With Superior Labral Anterior-Posterior Injuries",
     "org": "NATA",
     "doc_type": "pdf",
     "pub_date": "2018",
