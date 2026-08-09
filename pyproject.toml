@@ -20,3 +20,7 @@ warn_unused_ignores = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Put the repo root on sys.path so tests can import the ingest package without
+# installing it. `python -m pytest` does this implicitly; bare `pytest` does not,
+# and CI runs the bare form via `make check`.
+pythonpath = ["."]
