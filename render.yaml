@@ -1,0 +1,19 @@
+# Render blueprint. The API keys are not declared with values here: `sync: false`
+# makes Render prompt for them once and keep them out of the repository.
+services:
+  - type: web
+    name: medbrain
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      # Required at runtime to embed questions, and read at build time to embed
+      # the corpus.
+      #
+      # This is the only key the service needs. Embedding and the answer model
+      # are both OpenAI; the judge is the only Anthropic caller and it runs in
+      # the eval harness, not here. Pointing MEDBRAIN_ANSWER_MODEL at a claude
+      # model would also require ANTHROPIC_API_KEY to be added.
+      - key: OPENAI_API_KEY
+        sync: false

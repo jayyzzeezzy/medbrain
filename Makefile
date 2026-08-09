@@ -1,4 +1,4 @@
-.PHONY: install lint typecheck test format check ingest ingest-dry eval
+.PHONY: install lint typecheck test format check ingest ingest-dry eval serve
 
 install:
 	pip install -r requirements.txt -r requirements-dev.txt
@@ -26,3 +26,6 @@ format:
 	ruff format .
 
 check: lint typecheck test
+
+serve:
+	uvicorn app.main:app --reload --port 8000

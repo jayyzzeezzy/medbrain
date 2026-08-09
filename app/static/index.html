@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MedBrain</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <h1>MedBrain</h1>
+        <p class="tagline">
+          Ask questions across indexed rehabilitation protocols and clinical guidelines.
+        </p>
+      </div>
+    </header>
+
+    <!-- Shown persistently rather than appended to each answer. A disclaimer
+         that arrives with the answer reads as a caveat to that answer; one that
+         frames the whole tool describes what the tool is. -->
+    <div class="disclaimer" role="note">
+      <strong>Document lookup, not medical advice.</strong>
+      MedBrain reports what the indexed guidelines and protocols say. Clinical
+      decisions rest with the treating clinician.
+    </div>
+
+    <main class="wrap">
+      <form id="ask-form" autocomplete="off">
+        <label class="visually-hidden" for="question">Your question</label>
+        <textarea
+          id="question"
+          name="question"
+          rows="2"
+          placeholder="What are the phases in the MGB Achilles repair protocol?"
+          maxlength="2000"
+          required
+        ></textarea>
+        <div class="controls">
+          <div class="examples" id="examples">
+            <span>Try:</span>
+            <button type="button" data-q="What return-to-sport criteria does the JOSPT ACL guideline list?">
+              return-to-sport criteria
+            </button>
+            <button type="button" data-q="What is recommended for preventing recurrent ankle sprains?">
+              preventing ankle sprains
+            </button>
+            <button type="button" data-q="What is the difference between meniscus repair and meniscectomy rehab protocols?">
+              repair vs meniscectomy
+            </button>
+          </div>
+          <button type="submit" id="submit">Ask</button>
+        </div>
+      </form>
+
+      <div id="status" class="status" hidden></div>
+      <section id="thread" aria-live="polite"></section>
+    </main>
+
+    <footer class="wrap">
+      <span id="health"></span>
+    </footer>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

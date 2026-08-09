@@ -105,6 +105,37 @@ def answer(question: str, k: int = DEFAULT_K, store_path: Path = DEFAULT_PATH) -
 def stream_answer(
     question: str, k: int = DEFAULT_K, store_path: Path = DEFAULT_PATH
 ) -> Iterator[str]:
-    """Yield answer tokens as they arrive. Used by the web API."""
+    """Yield answer tokens as they arrive."""
     hits = retrieve(question, k, store_path)
     yield from stream(answer_model(), SYSTEM_PROMPT, build_user_prompt(question, hits))
+
+
+@dataclass(frozen=True)
+class Event:
+    """One step of a streamed answer.
+
+    Three kinds, in order: `sources` once at the start, `token` many times, and
+    `cited` once at the end. The retrieved sources are sent before the first
+    token so the interface can show what the answer is about to be built from,
+    and the cited subset is sent afterwards because which markers were actually
+    used is not known until the text is complete.
+    """
+
+    kind: str
+    text: str = ""
+    sources: list[Source] = field(default_factory=list)
+
+
+def stream_events(
+    question: str, k: int = DEFAULT_K, store_path: Path = DEFAULT_PATH
+) -> Iterator[Event]:
+    """Stream an answer as typed events. Used by the web API."""
+    hits = retrieve(question, k, store_path)
+    yield Event("sources", sources=[Source.from_hit(i, h) for i, h in enumerate(hits, start=1)])
+
+    parts: list[str] = []
+    for token in stream(answer_model(), SYSTEM_PROMPT, build_user_prompt(question, hits)):
+        parts.append(token)
+        yield Event("token", text=token)
+
+    yield Event("cited", sources=cited_sources("".join(parts), hits))

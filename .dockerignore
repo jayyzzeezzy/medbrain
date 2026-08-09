@@ -1,0 +1,14 @@
+# var/ is excluded so a local build behaves exactly like a Render build, which
+# clones from git and therefore never has an index to start from. Copying the
+# local index in would make the build pass here and fail there.
+var/
+.venv/
+.git/
+.github/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.env
+evals/reports/
