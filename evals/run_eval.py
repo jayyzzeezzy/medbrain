@@ -1,16 +1,23 @@
-"""Score retrieval quality against the hand-authored question set.
+"""Score the system against the hand-authored question set.
 
-This is the retrieval half of the eval harness. It embeds every question, runs
-each against the index, and scores the results against the expected_sources
-recorded in the dataset. Answer-quality scoring joins once the generation layer
-exists; retrieval scoring deliberately does not wait for it, because ingestion
-decisions need measuring now, against all questions at once, rather than by
-hand-tuning against whichever single query is under the microscope.
+Two halves that measure different things. Retrieval scoring asks whether the
+right document reached the model, and runs on every invocation because it is
+fast and free. Answer scoring asks what the model did with it, and costs an API
+call per question in each direction, so --retrieval-only exists for the tight
+loop while the full run stays the default.
+
+The halves are reported separately rather than averaged, because a question can
+pass one and fail the other, and which one it failed is the whole diagnosis.
+One question in this set retrieves its source at rank 1 and then misattributes
+an evidence grade; a combined score would have shown that as a partial credit
+somewhere in the middle and pointed at nothing.
 
 Questions whose categories retrieve nothing by design (unanswerable,
 advice_refusal, clarification) are not scored for hit rate. Their retrieved
 context is logged instead: what the index confidently serves for a question
 the app must decline is the pressure the grounding layer has to withstand.
+Answer scoring, by contrast, covers every question, since declining well is a
+behaviour worth measuring rather than an absence of one.
 """
 
 from __future__ import annotations
@@ -25,9 +32,12 @@ from typing import Any
 import yaml
 from dotenv import load_dotenv
 
+from config import answer_model, judge_model
+from evals.judge import JudgeError, Verdict, judge
 from evals.metrics import all_sources_hit, first_relevant_rank, reciprocal_rank
 from ingest.embed import embed_texts
 from ingest.store import DEFAULT_PATH, ChunkStore
+from rag.answer import answer
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATASET = REPO_ROOT / "evals" / "dataset.yaml"
@@ -99,6 +109,61 @@ def run(k: int, store_path: Path) -> tuple[list[Scored], list[Logged]]:
     return scored, logged
 
 
+def run_answers(k: int, store_path: Path) -> list[Verdict]:
+    """Generate an answer for every question and score it.
+
+    Answering goes through the same entry point the web API uses rather than a
+    shortcut that reuses the vectors embedded above. An eval that exercises a
+    different retrieval path from production measures something production does
+    not do, and the duplicated embedding cost is a rounding error against the
+    generation calls.
+    """
+    verdicts: list[Verdict] = []
+    questions = load_dataset()
+    for index, question in enumerate(questions, start=1):
+        print(f"  [{index}/{len(questions)}] {question['id']}", flush=True)
+        try:
+            verdicts.append(judge(question, answer(question["question"], k, store_path)))
+        except JudgeError as exc:
+            # An unreadable verdict is a harness fault, not an answer fault.
+            # Scoring it as a failure would blame the system under test.
+            print(f"      skipped: {exc}")
+    return verdicts
+
+
+def print_answer_report(verdicts: list[Verdict]) -> None:
+    print(f"\nANSWERS (generator {answer_model()}, judge {judge_model()})")
+    print(f"  {'id':42} {'cat':14} {'pass':5} {'beh':4} {'grnd':5} {'ovr':4} {'facts':>6}")
+    for v in verdicts:
+        marker = "*" if v.expected_to_fail else " "
+        print(
+            f" {marker}{v.question_id:42} {v.category:14} "
+            f"{'yes' if v.passed else 'NO':5} "
+            f"{'ok' if v.behavior else 'NO':4} "
+            f"{'ok' if v.grounding else 'NO':5} "
+            f"{'ok' if v.overreach else 'NO':4} "
+            f"{v.facts_present}/{v.facts_total:<4}"
+        )
+        if not v.passed:
+            print(f"    {v.summary}")
+            for claim in v.unsupported:
+                print(f"    unsupported: {claim}")
+
+    regular = [v for v in verdicts if not v.expected_to_fail]
+    if not regular:
+        return
+    total = len(regular)
+    facts_total = sum(v.facts_total for v in regular)
+    facts_present = sum(v.facts_present for v in regular)
+    print(f"\n  passed:    {sum(1 for v in regular if v.passed)}/{total}")
+    print(f"  behavior:  {sum(1 for v in regular if v.behavior)}/{total}")
+    print(f"  grounding: {sum(1 for v in regular if v.grounding)}/{total}")
+    print(f"  overreach: {sum(1 for v in regular if v.overreach)}/{total}")
+    if facts_total:
+        print(f"  key facts: {facts_present}/{facts_total}")
+    print("  (* = expected_to_fail, excluded from totals)")
+
+
 def print_report(scored: list[Scored], logged: list[Logged], k: int) -> None:
     print(f"\nRETRIEVAL (k={k})")
     print(f"  {'id':42} {'cat':14} {'hit':4} {'RR':>5}")
@@ -123,13 +188,24 @@ def print_report(scored: list[Scored], logged: list[Logged], k: int) -> None:
         print(f"  {entry.question_id:42} {entry.category:14} {docs}")
 
 
-def save_report(scored: list[Scored], logged: list[Logged], k: int, count: int) -> Path:
+def save_report(
+    scored: list[Scored],
+    logged: list[Logged],
+    verdicts: list[Verdict],
+    k: int,
+    count: int,
+) -> Path:
     REPORTS.mkdir(parents=True, exist_ok=True)
     stamp = time.strftime("%Y%m%d-%H%M%S")
-    payload = {
+    payload: dict[str, Any] = {
         "timestamp": stamp,
         "k": k,
         "index_chunks": count,
+        # Recorded because the scores are not comparable across models, and a
+        # report that does not say which models produced it invites exactly that
+        # comparison later.
+        "answer_model": answer_model(),
+        "judge_model": judge_model() if verdicts else None,
         "scored": [
             {
                 "id": s.question_id,
@@ -152,16 +228,38 @@ def save_report(scored: list[Scored], logged: list[Logged], k: int, count: int) 
             }
             for entry in logged
         ],
+        "answers": [
+            {
+                "id": v.question_id,
+                "category": v.category,
+                "passed": v.passed,
+                "behavior": v.behavior,
+                "grounding": v.grounding,
+                "overreach": v.overreach,
+                "facts_present": v.facts_present,
+                "facts_total": v.facts_total,
+                "unsupported": v.unsupported,
+                "notes": v.notes,
+                "summary": v.summary,
+                "expected_to_fail": v.expected_to_fail,
+            }
+            for v in verdicts
+        ],
     }
-    path = REPORTS / f"retrieval-{stamp}.json"
+    path = REPORTS / f"eval-{stamp}.json"
     path.write_text(json.dumps(payload, indent=2))
     return path
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Score retrieval against the eval set.")
+    parser = argparse.ArgumentParser(description="Score MedBrain against the eval set.")
     parser.add_argument("--k", type=int, default=5, help="results per query (default 5)")
     parser.add_argument("--store", type=Path, default=DEFAULT_PATH)
+    parser.add_argument(
+        "--retrieval-only",
+        action="store_true",
+        help="skip answer generation and judging, which is the part that costs money",
+    )
     args = parser.parse_args()
     load_dotenv()
 
@@ -172,7 +270,14 @@ def main() -> None:
 
     scored, logged = run(args.k, args.store)
     print_report(scored, logged, args.k)
-    path = save_report(scored, logged, args.k, count)
+
+    verdicts: list[Verdict] = []
+    if not args.retrieval_only:
+        print("\nGENERATING AND JUDGING")
+        verdicts = run_answers(args.k, args.store)
+        print_answer_report(verdicts)
+
+    path = save_report(scored, logged, verdicts, args.k, count)
     print(f"\nreport: {path.relative_to(REPO_ROOT)}")
 
 

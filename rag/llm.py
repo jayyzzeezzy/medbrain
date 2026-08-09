@@ -1,7 +1,7 @@
 """One text-completion interface over two providers.
 
 The generator and the judge are deliberately allowed to run on different
-providers. 
+providers.
 
 The provider is inferred from the model id rather than configured separately,
 because a provider setting that disagrees with the model name is a failure mode

@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import os
 
-# The generator and the judge default to different providers on purpose. 
-# This design choice is trying to mitigate any judgement biases. 
+# The generator and the judge default to different providers on purpose.
+# This design choice is trying to mitigate any judgement biases.
 DEFAULT_ANSWER_MODEL = "gpt-4.1-mini"
 DEFAULT_JUDGE_MODEL = "claude-opus-5"
 

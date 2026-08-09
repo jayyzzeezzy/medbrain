@@ -32,6 +32,11 @@ class Source:
     title: str
     url: str
     page: int
+    # The text is carried rather than left behind in the store because both
+    # consumers need it: the judge cannot check whether a citation supports a
+    # claim without reading the source, and the UI shows the excerpt so a reader
+    # can verify a citation without opening the PDF.
+    text: str = ""
     section: str | None = None
     phase: str | None = None
     grade: str | None = None
@@ -42,6 +47,7 @@ class Source:
         meta = hit.metadata
         return cls(
             marker=marker,
+            text=hit.text,
             doc_id=str(meta.get("doc_id", "")),
             title=str(meta.get("title", "")),
             url=str(meta.get("url", "")),
