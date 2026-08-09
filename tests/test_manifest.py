@@ -1,11 +1,15 @@
-"""Integrity checks for the corpus manifest and the raw files it describes."""
+"""Integrity checks for the corpus manifest, its raw files, and the eval set."""
 
 import json
 from pathlib import Path
+from typing import Any
+
+import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = REPO_ROOT / "corpus" / "manifest.json"
 RAW = REPO_ROOT / "corpus" / "raw"
+EVALS = REPO_ROOT / "evals" / "dataset.yaml"
 
 REQUIRED_KEYS = {"id", "url", "title", "org", "doc_type", "pub_date", "fetch"}
 
@@ -13,6 +17,11 @@ REQUIRED_KEYS = {"id", "url", "title", "org", "doc_type", "pub_date", "fetch"}
 def load_manifest() -> list[dict[str, str]]:
     docs: list[dict[str, str]] = json.loads(MANIFEST.read_text())
     return docs
+
+
+def load_questions() -> list[dict[str, Any]]:
+    questions: list[dict[str, Any]] = yaml.safe_load(EVALS.read_text())
+    return questions
 
 
 def test_manifest_has_22_documents() -> None:
@@ -46,3 +55,20 @@ def test_no_orphan_files_in_raw() -> None:
     expected = {f"{doc['id']}.{doc['doc_type']}" for doc in load_manifest()}
     actual = {p.name for p in RAW.iterdir() if p.is_file()}
     assert actual == expected, f"unexpected or misnamed files: {actual ^ expected}"
+
+
+def test_expected_sources_resolve_to_manifest_ids() -> None:
+    known = {doc["id"] for doc in load_manifest()}
+    for q in load_questions():
+        for src in q.get("expected_sources") or []:
+            assert src in known, f"{q['id']}: unknown source '{src}'"
+
+
+def test_category_minimums_are_met() -> None:
+    counts: dict[str, int] = {}
+    for q in load_questions():
+        counts[q["category"]] = counts.get(q["category"], 0) + 1
+    assert sum(counts.values()) >= 15
+    assert counts.get("unanswerable", 0) >= 3
+    assert counts.get("multi_doc", 0) >= 2
+    assert counts.get("advice_refusal", 0) >= 2
