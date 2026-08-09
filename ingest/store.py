@@ -7,7 +7,7 @@ so the store compares content hashes and reports exactly what needs work.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -18,6 +18,21 @@ from ingest.models import Chunk
 
 DEFAULT_PATH = Path("var/chroma")
 COLLECTION = "medbrain"
+
+
+@dataclass(frozen=True)
+class Hit:
+    """One retrieved chunk with the provenance needed to cite or filter it."""
+
+    text: str
+    distance: float
+    # Values as Chroma declares them; Mapping keeps the field covariant so the
+    # library's own metadata type is accepted without a lossy cast.
+    metadata: Mapping[str, object]
+
+    @property
+    def doc_id(self) -> str:
+        return str(self.metadata.get("doc_id", ""))
 
 
 @dataclass(frozen=True)
@@ -102,3 +117,19 @@ class ChunkStore:
 
     def count(self) -> int:
         return self._collection.count()
+
+    def query(self, vector: list[float], k: int) -> list[Hit]:
+        """Return the k nearest chunks for an already-embedded query."""
+        embedding: Sequence[float] = vector
+        result = self._collection.query(
+            query_embeddings=[embedding],
+            n_results=k,
+            include=["documents", "metadatas", "distances"],
+        )
+        documents = (result.get("documents") or [[]])[0]
+        metadatas = (result.get("metadatas") or [[]])[0]
+        distances = (result.get("distances") or [[]])[0]
+        return [
+            Hit(text=text, distance=distance, metadata=metadata)
+            for text, metadata, distance in zip(documents, metadatas, distances, strict=True)
+        ]

@@ -3,6 +3,22 @@
 from dataclasses import dataclass, field
 
 
+def build_embedding_text(title: str, section: str | None, phase: str | None, text: str) -> str:
+    """Compose the provenance-prefixed text used for embedding and hashing.
+
+    Kept as a free function so the pipeline and the content hash cannot drift
+    apart: whatever is embedded is exactly what the hash covers, so changing the
+    prefix correctly invalidates the stored vectors.
+    """
+    parts = [title]
+    if section:
+        parts.append(section)
+    if phase:
+        parts.append(phase)
+    parts.append(text)
+    return " | ".join(parts)
+
+
 @dataclass(frozen=True)
 class Block:
     """A positioned run of text extracted from one page of a source document.
@@ -43,6 +59,18 @@ class Chunk:
     grade: str | None = None
     grade_scale: str | None = None
     extra: dict[str, str] = field(default_factory=dict)
+
+    def embedding_text(self) -> str:
+        """The text actually sent to the embedding model.
+
+        A chunk read in isolation often omits the words a user searches with.
+        The ankle guideline's therapeutic exercise recommendation never says
+        "ankle", "sprain" or "2021"; those live in the title and the section
+        heading. Prepending them lets a chunk match a question phrased around
+        the document it came from, while the stored document text stays exactly
+        what a citation will show.
+        """
+        return build_embedding_text(self.title, self.section, self.phase, self.text)
 
     def metadata(self) -> dict[str, str | int]:
         """Flatten to a Chroma-compatible metadata mapping.

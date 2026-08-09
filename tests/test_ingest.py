@@ -101,7 +101,13 @@ def test_split_always_makes_progress() -> None:
     """
     text = "word " * 4000 + ". " + "word " * 4000
     parts = _split_oversized(text)
-    assert len(parts) < 20, f"expected a handful of parts, got {len(parts)}"
+
+    # Each step must advance by at least the budget minus the overlap, so the
+    # part count is bounded by the input size rather than by how much sentence
+    # punctuation the text happens to contain. Asserting against the parameters
+    # rather than a fixed number keeps this honest if the budget is retuned.
+    ceiling = len(text) / (MAX_CHARS - OVERLAP_CHARS) * 1.5
+    assert len(parts) < ceiling, f"expected under {ceiling:.0f} parts, got {len(parts)}"
     assert sum(len(p) for p in parts) < len(text) * 1.5, "excessive duplication"
     for part in parts:
         assert len(part) <= MAX_CHARS + OVERLAP_CHARS

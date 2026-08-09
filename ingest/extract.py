@@ -30,21 +30,44 @@ BOILERPLATE = re.compile(
 )
 
 
+# Where a journal document stops being clinical content and becomes apparatus.
+# Reference lists, author affiliations and database search strategies share
+# vocabulary with the recommendations they support, so indexing them puts
+# hundreds of bibliography entries into competition with the text a clinician is
+# looking for.
+BACK_MATTER = re.compile(
+    r"^(REFERENCES|APPENDIX|AUTHOR/REVIEWER AFFILIATIONS|"
+    r"AFFILIATIONS AND CONTACTS|SEARCH STRATEG)",
+    re.IGNORECASE,
+)
+
+# A table of contents lists the same headings with dot leaders. Cutting on a
+# contents entry would discard the document instead of its back matter.
+TOC_LEADER = re.compile(r"\.\s*\.\s*\.")
+
+
 @dataclass(frozen=True)
 class LayoutConfig:
     """How to read one family of documents."""
 
     columns: int
     grade_scale: str | None = None
+    has_back_matter: bool = False
 
 
 LAYOUTS: dict[str, LayoutConfig] = {
     "Mass General Brigham": LayoutConfig(columns=1),
     "JOSPT / APTA Academy of Orthopaedic Physical Therapy": LayoutConfig(
-        columns=2, grade_scale="JOSPT grade of recommendation"
+        columns=2,
+        grade_scale="JOSPT grade of recommendation",
+        has_back_matter=True,
     ),
-    "NATA": LayoutConfig(columns=2, grade_scale="NATA evidence category"),
-    "BJSM": LayoutConfig(columns=2),
+    "NATA": LayoutConfig(
+        columns=2,
+        grade_scale="NATA evidence category",
+        has_back_matter=True,
+    ),
+    "BJSM": LayoutConfig(columns=2, has_back_matter=True),
     "CDC HEADS UP": LayoutConfig(columns=1),
 }
 
@@ -125,8 +148,26 @@ def extract_html(path: Path) -> list[Block]:
     return blocks
 
 
+def trim_back_matter(blocks: list[Block]) -> list[Block]:
+    """Drop everything from the first back-matter heading onwards.
+
+    The cut is taken at the first genuine heading rather than the last, because
+    once a document reaches its references it does not return to clinical
+    content. Contents-page entries are skipped so the cut lands on the section
+    itself and not on the line that lists it.
+    """
+    for index, block in enumerate(blocks):
+        if BACK_MATTER.match(block.text) and not TOC_LEADER.search(block.text):
+            return blocks[:index]
+    return blocks
+
+
 def extract(path: Path, org: str, doc_type: str) -> list[Block]:
     """Extract one source document into ordered blocks."""
     if doc_type == "html":
         return extract_html(path)
-    return extract_pdf(path, layout_for(org))
+    layout = layout_for(org)
+    blocks = extract_pdf(path, layout)
+    if layout.has_back_matter:
+        blocks = trim_back_matter(blocks)
+    return blocks

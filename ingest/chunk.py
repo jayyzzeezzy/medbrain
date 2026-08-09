@@ -13,10 +13,21 @@ from __future__ import annotations
 import hashlib
 import re
 
-from ingest.models import Block, Chunk
+from ingest.models import Block, Chunk, build_embedding_text
 
 # Rough character budget per chunk. Characters rather than tokens because the
 # ratio is stable for this corpus and the limit only needs to be safe, not exact.
+#
+# A/B tested against 1400/200 with the retrieval eval at k=5. The theory behind
+# sizing down was that large chunks accumulate several recommendations and
+# outscore short precise ones; the measurement said otherwise: 3600 scored
+# hit@5 10/11 with MRR 0.89 against 9/11 and 0.86 for 1400, and the sibling
+# rotator cuff question the small budget was meant to help went from a rank-3
+# hit to a complete miss under it. Larger chunks carry more of a document's
+# vocabulary, which is what document-level hit rate rewards. Caveat recorded
+# with the decision: the metric is document-level, and within-document
+# precision is not measured until answer scoring exists, so this value is held
+# by evidence that is necessary but not sufficient.
 MAX_CHARS = 3600
 OVERLAP_CHARS = 400
 MIN_CHARS = 120
@@ -153,6 +164,7 @@ def chunk_journal(
     """
     out: list[tuple[str, dict[str, str | int]]] = []
     section: str | None = None
+    section_page: int | None = None
     buffer: list[str] = []
     page = blocks[0].page if blocks else 1
     grade: str | None = None
@@ -185,9 +197,25 @@ def chunk_journal(
 
     for block in blocks:
         text = block.text
+
+        # A section label expires one page after its heading. Real sections in
+        # these documents turn over on the page where they appear, or spill one
+        # page at most; the guideline body uses mixed-case subheadings that the
+        # all-caps pattern cannot see, so without an expiry a single early
+        # heading labels a hundred chunks it has nothing to do with. A label
+        # such as GRADES OF RECOMMENDATION STRENGTH OF EVIDENCE then leaks
+        # "strength of evidence" into the embeddings of ordinary body text,
+        # which steals exactly the queries that mention evidence strength. An
+        # unlabelled chunk is honest; a stale label is a false promise.
+        if section_page is not None and block.page > section_page + 1:
+            flush()
+            section = None
+            section_page = None
+
         if HEADING.match(text):
             flush()
             section = text
+            section_page = block.page
             page = block.page
             continue
 
@@ -262,6 +290,11 @@ def build_chunks(blocks: list[Block], doc: dict[str, str]) -> list[Chunk]:
 
     chunks: list[Chunk] = []
     for index, (text, meta) in enumerate(pieces):
+        section = str(meta["section"]) if "section" in meta else None
+        phase = str(meta["phase"]) if "phase" in meta else None
+        # Hash what is embedded, not just the raw text, so that changing how
+        # provenance is composed invalidates the stored vectors.
+        embedded = build_embedding_text(doc["title"], section, phase, text)
         chunks.append(
             Chunk(
                 id=f"{doc['id']}::{index:04d}",
@@ -271,9 +304,9 @@ def build_chunks(blocks: list[Block], doc: dict[str, str]) -> list[Chunk]:
                 org=org,
                 url=doc["url"],
                 page=int(meta.get("page", 1)),
-                content_hash=_hash(f"{doc['id']}|{text}"),
-                section=str(meta["section"]) if "section" in meta else None,
-                phase=str(meta["phase"]) if "phase" in meta else None,
+                content_hash=_hash(f"{doc['id']}|{embedded}"),
+                section=section,
+                phase=phase,
                 grade=str(meta["grade"]) if "grade" in meta else None,
                 grade_scale=(str(meta["grade_scale"]) if "grade_scale" in meta else None),
             )

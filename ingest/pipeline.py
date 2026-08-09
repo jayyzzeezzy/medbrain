@@ -64,7 +64,7 @@ def ingest(*, dry_run: bool = False, store_path: Path = DEFAULT_PATH) -> int:
 
     if plan.to_upsert:
         print(f"Embedding {len(plan.to_upsert)} chunks:")
-        vectors = embed_texts([c.text for c in plan.to_upsert], verbose=True)
+        vectors = embed_texts([c.embedding_text() for c in plan.to_upsert], verbose=True)
         store.apply(plan.to_upsert, vectors)
 
     if plan.to_delete:
