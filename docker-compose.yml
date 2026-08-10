@@ -1,0 +1,25 @@
+# One-command local run: `docker compose up --build`.
+#
+# The index lives in a named volume rather than the image, so the first start
+# ingests the corpus and every start after that finds it unchanged and skips
+# straight to serving. That is the same idempotency the deployed image relies on,
+# exercised locally.
+services:
+  medbrain:
+    build: .
+    ports:
+      - "8000:8000"
+    # Supplies OPENAI_API_KEY, and MEDBRAIN_ANSWER_MODEL if it is set.
+    env_file:
+      - .env
+    volumes:
+      - index:/srv/var
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if __import__('json').load(urllib.request.urlopen('http://localhost:8000/api/health'))['ok'] else 1)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+
+volumes:
+  index:

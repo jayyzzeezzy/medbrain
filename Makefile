@@ -9,8 +9,9 @@ ingest:
 ingest-dry:
 	python -m ingest.pipeline --dry-run
 
+# ARGS passes flags through, e.g. `make eval ARGS="--retrieval-only --k 8"`.
 eval:
-	python -m evals.run_eval
+	python -m evals.run_eval $(ARGS)
 
 lint:
 	ruff check .
